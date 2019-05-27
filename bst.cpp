@@ -106,10 +106,39 @@ int isBalanced(Node *root, int * height){
 //end-----------
 Node * deleteNode(Node *root, int val){
 	if(root != NULL){
-		cout << "\nNot Null\n" ;
 		return root;
 	}
 	
+	if(root->data >  val){
+		root->left = deleteNode(root->left, val);
+		return root;
+	}
+	else if(root->data < val){
+		root->right = deleteNode(root->right, val);
+		return root;
+	}
+	if(root->left == NULL){
+		Node * p = root->right;
+		delete root;
+		return p;
+	}
+	else if(root->right == NULL){
+		Node * p = root->left;
+		delete root;
+		return p;
+	}
+	else{
+		Node * succPar = root->right;
+		Node * succ = root-> right;
+		while(succ->left != NULL){
+			succPar=succ;
+			succ=succ->left;
+		}
+		root->data = succ->data;
+		succPar->left = succ->right;
+		delete succ;
+		return root;
+	}
 }
 int main(){
 	int n, val, height;
