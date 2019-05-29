@@ -105,7 +105,7 @@ int isBalanced(Node *root, int * height){
 }
 //end-----------
 Node * deleteNode(Node *root, int val){
-	if(root != NULL){
+	if(root == NULL){
 		return root;
 	}
 	
@@ -131,11 +131,16 @@ Node * deleteNode(Node *root, int val){
 		Node * succPar = root->right;
 		Node * succ = root-> right;
 		while(succ->left != NULL){
+			cout<< succ->data <<" "<<succPar->data;
 			succPar=succ;
 			succ=succ->left;
 		}
+		cout<< succ->data <<" "<<succPar->data;
 		root->data = succ->data;
 		succPar->left = succ->right;
+		//condition to handle segmentation fault
+		if(root->right == succ)
+			root->right = NULL;
 		delete succ;
 		return root;
 	}
@@ -156,6 +161,7 @@ int main(){
 	cout << "Height Of Tree="<< height <<endl;
 	cout << "isHeight Balanced="<< x <<endl;
 	//delete a node
-	cout << deleteNode(NULL, val) << endl;
+	root = deleteNode(root, 2);
+	displayBST(root) ;
 	return 0;
 }
