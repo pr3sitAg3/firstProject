@@ -140,7 +140,7 @@ Node * deleteNode(Node *root, int val){
 		succPar->left = succ->right;
 		//condition to handle segmentation fault
 		if(root->right == succ)
-			root->right = NULL;
+			root->right =  succ->right;
 		delete succ;
 		return root;
 	}
