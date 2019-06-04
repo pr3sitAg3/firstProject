@@ -9,7 +9,7 @@ of binary search tree.
 2. Check if given bst is height balanced or not
 3. Calculate Height of Tree
 4. Generate balance factor of bst
-5. delete node from bst --pending
+5. delete node from bst   
 */
 typedef struct node{
 	int data, bf;//data and balance factor of the node
