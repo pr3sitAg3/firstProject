@@ -10,6 +10,7 @@ of binary search tree.
 3. Calculate Height of Tree
 4. Generate balance factor of bst
 5. delete node from bst   
+6. Serializing and Deserializing of Tree
 */
 typedef struct node{
 	int data, bf;//data and balance factor of the node
@@ -145,6 +146,34 @@ Node * deleteNode(Node *root, int val){
 		return root;
 	}
 }
+void serialize(Node * root, vector<int> &v){
+	if(root == NULL){
+		return;
+	}
+	queue<Node *> q;
+	q.push(root);
+	while(!q.empty()){
+		Node * temp = q.front();
+		q.pop();
+		if(temp){
+			v.push_back(temp->data);
+			q.push(temp->left);
+			q.push(temp->right);
+		}
+		else 
+			v.push_back(-1);
+	}
+}
+Node * deSerialize(vector<int> v){
+	vector<int>::iterator  itr = v.begin(), itr2=v.end();
+	Node * p=NULL;
+	for(; itr<itr2; itr++){
+		if(*itr != -1){
+			p = createBST(p, *itr);
+		}
+	}
+	return p;
+}
 int main(){
 	int n, val, height;
 	cin >> n;
@@ -163,5 +192,16 @@ int main(){
 	//delete a node
 	root = deleteNode(root, 2);
 	displayBST(root) ;
+	//serializing tree
+	vector<int> vtree;
+	cout<<"\nSerializing...\n";
+	serialize(root, vtree);
+	vector<int>::iterator itr;
+	for(itr= vtree.begin(); itr!=vtree.end(); itr++){
+		cout<< *itr << ",";
+	}
+	cout<<"\nS. End\n";
+	cout<<"\nDeSerializing...\n";
+	displayBST(deSerialize(vtree));
 	return 0;
 }
