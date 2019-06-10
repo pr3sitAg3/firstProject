@@ -24,6 +24,7 @@ int heightOfBST(Node * root){
 		return -1;
 	return maxNum(heightOfBST(root->left), heightOfBST(root->right))+1;
 }
+//Generate Balance Factor of the Tree
 Node * generateBF(Node * root){
 	if(root != NULL){		
 		generateBF(root->left);
@@ -32,24 +33,32 @@ Node * generateBF(Node * root){
 	}
 	return root;
 }
+//getBalance of a node
+int getBalance(Node * root){
+	if (root == NULL)
+		return 0;
+	return heightOfBST(root->left) - heightOfBST(root->right);
+
+//create Node
+Node * createNode(int key){
+	Node * p = (Node *)malloc(sizeof(Node));
+	p->data = key;
+	p->bf = 0;
+	p->left = NULL;
+	p->right = NULL;
+	return p;	
+}
+	
+//create BST
 Node * createBST(Node * root, int val){
 	if(root == NULL){
-		root = (Node *)malloc(sizeof(Node));
-		root->data = val;
-		root->bf=0;
-		root->left = NULL;
-		root->right = NULL;
-		return root;
+		return createNode(val);
 	}
 	Node *q = root;
 	while(q != NULL){
 		if(val < q->data ){
 			if(q->left == NULL){
-				q->left = (Node *)malloc(sizeof(Node));
-				q->left->data = val;
-				q->left->bf=0;
-				q->left->left = NULL;
-				q->left->right = NULL;
+				q->left = createNode(val);
 				return root;
 			}
 			else{
@@ -58,11 +67,7 @@ Node * createBST(Node * root, int val){
 		}
 		else{
 			if(q->right == NULL){
-				q->right = (Node *)malloc(sizeof(Node));
-				q->right->data = val;
-				q->right->bf=0;
-				q->right->left = NULL;
-				q->right->right = NULL;
+				q->right = createNode(val);
 				return root;
 			}
 			else{
@@ -71,6 +76,8 @@ Node * createBST(Node * root, int val){
 		}
 	}
 }
+
+//Inorder Traversal of a BST
 void displayBST(Node * root){
 	if (root!=NULL){
 		displayBST(root->left);
@@ -79,6 +86,17 @@ void displayBST(Node * root){
 	}
 	cout<<endl;
 }
+	
+//Preorder Traversal of BST
+void preorder(Node * root){
+	if(root != NULL){
+		cout<<"data="<<root->data<<",BF="<<root->bf<<" ";
+		preorder(root->left);
+		preorder(root->right);
+	}
+}
+
+//Check if BST is heightBalanced i.e. |bf| < 1
 int isHeightBalanceTree(Node * root){
 	if(root!=NULL){
 		if(root->bf > 1 || root->bf <-1) 
@@ -174,10 +192,65 @@ Node * deSerialize(vector<int> v){
 	}
 	return p;
 }
+	
+//Rotation of tree
+Node * leftRotate(Node * rptr ){
+	if(rptr == NULL){
+		return rptr;
+	}
+	Node * p = rptr->right;
+	rptr->right = p->left;
+	p->left = rptr;
+	p->bf = (heightOfBST(p->left)- heightOfBST(p->right));
+	rptr->bf = (heightOfBST(rptr->left)- heightOfBST(rptr->right));
+	return p;	
+}
+Node * rightRotate(Node * rptr){
+	if(rptr==NULL)
+		return rptr;
+	Node * p = rptr->left;
+	rptr->left = p->right;
+	p->right = rptr;
+	p->bf = (heightOfBST(p->left)- heightOfBST(p->right));
+	rptr->bf = (heightOfBST(rptr->left)- heightOfBST(rptr->right));
+	return p;
+}
+	
+//Insert in AVL tree
+Node * insertAVL(Node * root, int key){
+	if(root==NULL){
+		return createNode(key) ;
+	}
+	if(key < root->data)	{
+		root->left = insertAVL(root->left,key);
+	}
+	else if(key > root->data){
+		root->right = insertAVL(root->right, key);
+	}
+	else{
+		return root;
+	}
+	int balance = getBalance(root) ;
+	if(balance > 1 && key < root->left->data){
+		return rightRotate(root);
+	}
+	if(balance < -1 && key > root->right->data){
+		return leftRotate(root);
+	}
+	if(balance > 1 && key > root->left->data){
+		root->left = leftRotate(root->left);
+		return rightRotate(root);
+	}
+	if(balance < -1 && key < root->right->data){
+		root->right = rightRotate(root->right);
+		return leftRotate(root);
+	}
+	return root;
+}
 int main(){
 	int n, val, height;
 	cin >> n;
-	Node * root=NULL;
+	Node * root=NULL, *avlroot=NULL;
 	cout<<"Sizeof Node ="<<sizeof(Node)<<endl;
 	for(int i=0; i<n; i++){
 		cin >> val; 
@@ -203,5 +276,10 @@ int main(){
 	cout<<"\nS. End\n";
 	cout<<"\nDeSerializing...\n";
 	displayBST(deSerialize(vtree));
+	
+	 displayBST(root);
+	 cout<<"\nAVL tree:"<<endl;
+	 preorder(avlroot);
+
 	return 0;
 }
