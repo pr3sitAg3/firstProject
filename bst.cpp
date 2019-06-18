@@ -11,6 +11,10 @@ of binary search tree.
 4. Generate balance factor of bst
 5. delete node from bst   
 6. Serializing and Deserializing of Tree
+7. Insertion in AVL tree
+8. Deletion in AVL tree
+9. Calculate height and set diameter of a Tree
+10. Find the diameter of a Tree
 */
 typedef struct node{
 	int data, bf;//data and balance factor of the node
@@ -318,7 +322,7 @@ Node * deleteAVL(Node * root, int key){
 //calculate diameter of tree
 int _height(Node *root, int & dia){
 	/*utility function to set the diameter
-	--and return the height
+	 and return the height - O(n) solution
 	*/
 	if (root==NULL)	return -1;
 	int lh = _height(root->left, dia);
@@ -328,17 +332,12 @@ int _height(Node *root, int & dia){
 }
 int diameterBt(Node * root){
 	//Return the value of diameter of a binary tree
+	//O(n^2) solution
 	if(root==NULL) 	return 0;
-//	cout<<"\nRoot's Data="<<root->data;
 	int ld = diameterBt(root->left);
-//	cout<<",Root's ldiam="<<ld;
 	int rd = diameterBt(root->right);
-//	cout<<",Root's rdiam="<<rd;
 	int left_h = height(root->left);
-//	cout<<",Root's lh="<<left_h;
 	int right_h = height(root->right);
-	//cout<<",Root's rh="<<right_h;
-//	cout<<",Return value="<<max(max(left_h,right_h)+2, max(ld, rd));
 	return max(left_h+right_h+3, max(ld, rd));
 
 }	
@@ -376,5 +375,7 @@ int main(){
 	 cout<<"\nAVL tree:"<<endl;
 	 preorder(avlroot);
 
+	int diam = 0;
+	height = _height(root, diam);
 	return 0;
 }
