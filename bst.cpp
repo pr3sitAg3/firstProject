@@ -247,6 +247,101 @@ Node * insertAVL(Node * root, int key){
 	}
 	return root;
 }
+//deletion of node in AVL tree
+Node * deleteAVL(Node * root, int key){
+	if(root==NULL){
+		return NULL;
+	}
+	Node * p;
+	if(root->data > key){
+		root->left = deleteAVL(root->left, key);
+	}
+	else if(root->data < key){
+		root->right = deleteAVL(root->right, key);
+	}
+	else{
+		if(!root->left && !root->right){
+			delete root;
+			root = NULL;
+		}
+		else if(root->left && !root->right){
+			p = root->left;
+			root->data = p->data;
+			root->left = p->left;
+			root->right = p->right;
+			delete p;
+		}
+		else if (root->right && !root->left){
+			p = root->right;
+			root->data = p->data;
+			root->left = p->left;
+			root->right = p->right;
+			delete p;
+		}
+		else{
+			Node * par = root->left, *succ = root->left;
+			while(succ->left){
+				par = succ;
+				succ = succ->left;
+			}
+			root->data = succ->data;
+			par->left = succ->right;
+			if(root->right == succ)
+				root->right = succ->right;
+			delete succ;
+		}
+	}
+	////balancing now at the very first node in unwinding phase i.e.
+	///ancestors of the deleted node
+	if(root == NULL) return root;
+	int balance = getBalance(root);
+	if(balance > 1 && getBalance(root->left) >=0){
+		//Node was deleted from left heavy subtree
+		return rightRotate(root);
+	}
+	if(balance > 1 && getBalance(root->left) <0){
+		//Node was deleted from left heavy subtree and right subtree of left of root
+		root->left =  leftRotate(root->left);
+		return rightRotate(root);
+	}
+	if(balance < -1 && getBalance(root->right) <=0){
+		//Node was deleted from right heavy subtree
+		return leftRotate(root);
+	}
+	if(balance < -1 && getBalance(root->right) >0){
+		//Node was deleted from right heavy subtree and left subtree of root->right
+		root->right =  rightRotate(root->right);
+		return leftRotate(root);
+	}
+	return root;
+}
+//calculate diameter of tree
+int _height(Node *root, int & dia){
+	/*utility function to set the diameter
+	--and return the height
+	*/
+	if (root==NULL)	return -1;
+	int lh = _height(root->left, dia);
+	int rh = _height(root->right, dia);
+	dia = max(dia, lh+rh+3);
+	return 1+max(lh, rh);
+}
+int diameterBt(Node * root){
+	//Return the value of diameter of a binary tree
+	if(root==NULL) 	return 0;
+//	cout<<"\nRoot's Data="<<root->data;
+	int ld = diameterBt(root->left);
+//	cout<<",Root's ldiam="<<ld;
+	int rd = diameterBt(root->right);
+//	cout<<",Root's rdiam="<<rd;
+	int left_h = height(root->left);
+//	cout<<",Root's lh="<<left_h;
+	int right_h = height(root->right);
+	//cout<<",Root's rh="<<right_h;
+//	cout<<",Return value="<<max(max(left_h,right_h)+2, max(ld, rd));
+	return max(left_h+right_h+3, max(ld, rd));
+
+}	
 int main(){
 	int n, val, height;
 	cin >> n;
