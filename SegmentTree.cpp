@@ -62,13 +62,14 @@ int main() {
     while(t--){
         char qtype;
         int x, y ;
+	    //here x and y are indices considering the fact that array starts on position- 1
         cin >> qtype >> x>>y;
         switch(qtype){
             case 'q':
-                cout<<query(tree,1,0,n-1,x,y)<<endl;
+                cout<<query(tree,1,0,n-1,x-1,y-1)<<endl;
                 break;
             case 'u':
-                update(arr,tree,1,0,n-1,x,y);
+                update(arr,tree,1,0,n-1,x-1,y-1);
                 break;
         }
     }
