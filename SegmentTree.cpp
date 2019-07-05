@@ -4,7 +4,7 @@
 #include <vector>
 
 using namespace std;
-void buildSegTree(vector<int> &a, vector<int> &t, int node, int start, int end){
+void buildSegTree(int a[], int t[], int node, int start, int end){
     if(start == end){
         t[node] = a[start];
     }
@@ -17,7 +17,7 @@ void buildSegTree(vector<int> &a, vector<int> &t, int node, int start, int end){
     }
 }
 
-void update(vector<int> &a, vector<int> &t,int node, int start, int end, int idx, int val ){
+void update(int a[], int t[],int node, int start, int end, int idx, int val ){
     if(start == end){
         a[idx] = val;
         t[node] = val;
@@ -35,7 +35,7 @@ void update(vector<int> &a, vector<int> &t,int node, int start, int end, int idx
         t[node] = (t[left]< t[right])?t[left]:t[right];
     }
 }
-int query(vector<int>&t, int node, int start, int end, int l, int r){
+int query(int t[], int node, int start, int end, int l, int r){
     if(r < start ||  end < l){
         return 9999999;
     }
@@ -50,33 +50,26 @@ int query(vector<int>&t, int node, int start, int end, int l, int r){
 int main() {
 	int n,t;
 	cin >> n >> t;
-	vector<int> arr(n,0);
-	vector<int> tree(2*n, 0);
-	for(int i=0; i<n; i++){
+	int arr[100005], tree[2000005];
+	for(int i=1; i<=n; i++){
 	    cin >> arr[i];
 	}
-	buildSegTree(arr, tree, 1, 0, n-1);
+	buildSegTree(arr, tree, 1, 1, n);
 // 	for(int i=1; i<2*n; i++){
 // 	    cout<<"tree["<<i<<"]="<<tree[i]<<endl;
 // 	}
     while(t--){
         char qtype;
         int x, y ;
-	    //here x and y are indices considering the fact that array starts on position- 1
         cin >> qtype >> x>>y;
         switch(qtype){
             case 'q':
-                cout<<query(tree,1,0,n-1,x-1,y-1)<<endl;
+                cout<<query(tree,1,1,n,x,y)<<endl;
                 break;
             case 'u':
-                update(arr,tree,1,0,n-1,x-1,y-1);
+                update(arr,tree,1,1,n,x,y);
                 break;
         }
     }
-// 	update(arr,tree,1,0,n-1,4,-7);
-// 	for(int i=1; i<2*n; i++){
-// 	    cout<<"tree["<<i<<"]="<<tree[i]<<endl;
-// 	}
-// 	cout<<"Minimun of [2:5]="<<query(tree, 1, 0, n-1, 0, 1)<<endl;
-	return 0;
+    return 0;
 }
