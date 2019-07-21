@@ -4,19 +4,32 @@ using namespace std;
 
 vector<string> split_string(string);
 
-/*
- * Complete the waiter function below.
- */
 void display(vector<int> v){
      int n = v.size();
      for(int i=0; i<n; i++)
-        cout<<v[i]<<",";
+        cout<<"v["<<i<<"]="<<v[i]<<endl;
     cout<<"End of Display"<<endl;
 }
 
+void displayHashTable(vector<int> ht[], int size){
+    for(int i=0; i<size; i++){
+        int l = ht[i].size();
+        for(int j=0; j<l; j++ ){
+            cout<<ht[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+
+}
+/*
+In every ith iteration if divisible by ith prime number stack the number in ith index
+in hash table.
+*/
 vector<int> waiter(vector<int> number, int q) {
-    vector<int> prime;
-    for(int i=2; i<1201; i++){
+    vector<int> prime(1201,-1);
+    // cout<<"Q="<<q<<endl;
+    int p_count =0;
+    for(int i=2; p_count<1201; i++){
         int j = sqrt(i);
         int flag = 0;
         for(;j>=2;j--){
@@ -25,37 +38,69 @@ vector<int> waiter(vector<int> number, int q) {
                 break;
             }
         }
-        if(!flag)    prime.push_back(i);
+        if(!flag)    prime[++p_count] = i;
     }
+    // cout<<"Display Q=="<<endl;
+    // display(prime);
+    // cout<<"Display Q End"<<endl;
+    // exit(0);
     int p_size = prime.size();
     int n = number.size();
     vector<int> last(n,0);
     vector<int> temp;
     vector<int> hashTable[p_size];
-
-    for(int t=0;t<q; t++){
-        cout<<"Prime t="<<prime[t]<<endl;
-        for(int i=0; i<n; i++){
-                if(number[i]%prime[t] == 0 && last[i]==0){
-                    last[i] = 1;
-                    temp.push_back(number[i]);
-                    break;
+    
+    stack<int> st1, st2;
+    for(int i=0; i<n; i++){
+        st1.push(number[i]);
+    }
+    int swtc = 0;
+    for(int t=1;t<=q; t++){
+        if(!swtc){
+            for(int i=st1.size(); !st1.empty(); i--){
+                if((st1.top())%prime[t] ==0){
+                    hashTable[t].push_back(st1.top());
+                    st1.pop();
                 }
+                else{
+                    st2.push(st1.top());
+                    st1.pop();
+                }
+            }
+            swtc =1 ;
         }
-        if(last[i]){
-
+        else{
+            while( !st2.empty()){
+                // cout<<"S2.top="<<st2.top()<<",Prime["<<t<<"]="<<prime[t]<<endl;
+                if((st2.top()) % prime[t] ==0){
+                    hashTable[t].push_back(st2.top());
+                    st2.pop();
+                }
+                else{
+                    st1.push(st2.top());
+                    st2.pop();
+                }
+            }
+            swtc = 0;
         }
     }
-    cout<<"**********************"<<endl;
-    display(last);
-    display(number);
-    cout<<"**********************"<<endl;
-    int i=0;
-    while(i<n){
-        if(!last[i]){
-            temp.push_back(number[i]);
+    for(int k = 1; k<=q; k++){
+        int l = hashTable[k].size();
+        for(int m =l-1; m>=0; m--){
+            temp.push_back(hashTable[k][m]);
         }
-        i++;
+    }
+    if(!st1.empty() && st2.empty()){
+        while(!st1.empty()){
+            temp.push_back(st1.top());
+            st1.pop();
+        }
+    }
+    else if(st1.empty() && !st2.empty()){
+        while(!st2.empty()){
+            temp.push_back(st2.top());
+            st2.pop();
+        }
     }
     return temp;
 }
