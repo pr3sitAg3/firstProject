@@ -33,6 +33,16 @@ int main(){
 				break;
 		}
 	}
+	/*
+	**Optimize**
+	for(int i=0, j=n-1; i<=j; ++i, --j ){
+		if(a[i] > a[j]){
+			a[i]=a[i]^a[j];
+			a[j]=a[j]^a[i];
+			a[i]=a[i]^a[j];
+		}
+	}
+	*/
 	cout << "\nSeparated Values:\n";
 	for(int i=0; i<n; i++){
 		cout << arr[i] <<",";
